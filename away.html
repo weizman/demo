@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <script>
+      {
+        const stop = window.stop.bind(window);
+        setInterval( _ => stop() );
+      }
+    </script>
+  </head>
+  <body>
+    <div>
+      <h2>Can you redirect away from this page?</h2>
+      <ul>
+        <li>Use JavaScript to redirect away from this page by setting your code to the "js" query param.</li>
+        <li>Some examples:</li>
+        <ul>
+          <li><a href="?js=location.href='//x.com'">?js=location.href='//x.com'</a></li>
+        </ul>
+      </ul>
+    </div>
+    <script>
+      {
+        function getQueryParamValue(param) {
+          const queryString = window.location.search;
+          const urlParams = new URLSearchParams(queryString);
+          return urlParams.get(param);
+        }
+        
+        const js = getQueryParamValue('js');
+        eval(js);
+      }
+    </script>
+  </body>
+</html>
