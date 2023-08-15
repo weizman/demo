@@ -1,35 +1,38 @@
 <html>
-  <head>
+<head>
     <script>
-      {
-        const stop = window.stop.bind(window);
-        setInterval( _ => stop() );
-      }
+        {
+            // setInterval inside worker so you can't clearInterval it ;)
+            const b = new Blob(['setInterval(self.postMessage, 0, "");'], {type: 'text/javascript'});
+            const u = URL.createObjectURL(b);
+            const w = new Worker(u);
+            w.addEventListener('message', window.stop.bind(window));
+        }
     </script>
-  </head>
-  <body>
-    <div>
-      <h2>Can you redirect away from this page?</h2>
-      <ul>
-        <li>Use JavaScript to redirect away from this page by setting your code to the "js" query param.</li>
+</head>
+<body>
+<div>
+    <h2>Can you redirect away from this page?</h2>
+    <ul>
+        <li>Use JavaScript to redirect away from this page (in this tab) by setting your code to the "js" query param.</li>
+        <ul>
+            <li>Alternatively, you can use the devtools, up to you.</li>
+        </ul>
+        <li>Did you crack it? Do share!</li>
         <li>Some examples:</li>
         <ul>
-          <li><a href="?js=location.href='//x.com'">?js=location.href='//x.com'</a></li>
-          <li><a href="?js=document.write('<a href="//x.com" id="xxx"></a><scr'+'ipt>xxx.click();</scr'+'ipt>');">?js=document.write('<a href="//x.com" id="xxx"></a><scr'+'ipt>xxx.click();</scr'+'ipt>')</a></li>
+            <li><a target="_blank" href="?js=location.href='//x.com'">?js=location.href='//x.com'</a></li>
+            <li><a target="_blank" href="?js=document.write('<a href=\'//x.com\' id=\'xxx\'></a><script>xxx.click();</script>');">?js=document.write('&lt;a href="//x.com" id="xxx">&lt;/a>&lt;script>xxx.click();&lt;/script>')</a></li>
         </ul>
-      </ul>
-    </div>
-    <script>
-      {
-        function getQueryParamValue(param) {
-          const queryString = window.location.search;
-          const urlParams = new URLSearchParams(queryString);
-          return urlParams.get(param);
-        }
-        
-        const js = getQueryParamValue('js');
+    </ul>
+</div>
+<script>
+    {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const js = urlParams.get('js');
         eval(js);
-      }
-    </script>
-  </body>
+    }
+</script>
+</body>
 </html>
